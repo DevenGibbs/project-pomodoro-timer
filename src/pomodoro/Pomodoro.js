@@ -69,19 +69,32 @@ function Pomodoro() {
   //const breakDuration = 5;
 
   const increaseFocusTime = () => {
-    if (focusDuration < 60) setFocusDuration(focusDuration + 5);
+    if (focusDuration < 60) {
+      setFocusDuration(previous => {
+        const duration = previous + 5
+        setSession({ ...session, timeRemaining: duration * 60 })
+        return duration
+      });
+    }
   }  
 
   const decreaseFocusTime = () => {
-    if (focusDuration > 5) setFocusDuration(focusDuration - 5);
+    //if (focusDuration > 5) setFocusDuration(focusDuration - 5);
+    if (focusDuration > 5) {
+      setFocusDuration(previous => {
+        const duration = previous - 5
+        setSession({ ...session, timeRemaining: duration * 60 })
+        return duration
+      });
+    }
   }
 
   const increaseBreakTime = () => {
-    if (breakDuration < 15) setBreakDuration(breakDuration + 1);
+    if (breakDuration < 15) setBreakDuration(previous => previous + 1);
   }  
 
   const decreaseBreakTime = () => {
-    if (breakDuration > 1) setBreakDuration(breakDuration - 1);
+    if (breakDuration > 1) setBreakDuration(previous => previous - 1);
   }
 
   const stopButtonHandler = () => {
@@ -102,22 +115,22 @@ function Pomodoro() {
       setSession(nextSession(focusDuration, breakDuration));
     }
     setSession(nextTick);    
-  const left = session.timeRemaining
-  if(session.label === "Focusing") {
-    setAria(100*(focusDuration * 60 - left)/(focusDuration*60))
-  } else {
-    setAria(100*(breakDuration * 60 - left)/(breakDuration*60))
+    const left = session.timeRemaining
+    if(session.label === "Focusing") {
+      setAria(100*(focusDuration * 60 - left)/(focusDuration*60))
+    } else {
+      setAria(100*(breakDuration * 60 - left)/(breakDuration*60))
+    }
+    }, 
+    isTimerRunning ? 1000 : null
+  );
+
+
+  useInterval(()=> {
+  if(session && session.timeRemaining) {
+    return setElapsed(elapsed + 1)
   }
-  }, 
-  isTimerRunning ? 1000 : null
-);
-
-
-useInterval(()=> {
- if(session && session.timeRemaining) {
-   return setElapsed(elapsed + 1)
- }
-}, 1000)
+  }, 1000)
 
   /**
    * Called whenever the play/pause button is clicked.

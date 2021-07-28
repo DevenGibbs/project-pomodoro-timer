@@ -15,7 +15,6 @@ function Subtitle({ aria, breakDuration, focusDuration, session, isTimerRunning 
                     {/* TODO: Update message below correctly format the time remaining in the current session */}
                     <p className="lead" data-testid="session-sub-title">
                     {session && secondsToDuration(session.timeRemaining)} remaining
-                    {/* Onclick handler for focus time should also reset time remaining to the new "focus" time */}
                     </p>
                     {isTimerRunning ? "" : <h2>PAUSED</h2>}
                 </div>
